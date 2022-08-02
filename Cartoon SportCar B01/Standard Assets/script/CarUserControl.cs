@@ -30,6 +30,7 @@ namespace UnityStandardAssets.Vehicles.Car
             {
                 Debug.Log("Hola");
             }*/
+            //Accelerar
             if (Input.GetAxis("Trigger_Right") > 0)
             {
                 float amount;
@@ -38,6 +39,7 @@ namespace UnityStandardAssets.Vehicles.Car
                 v = amount;
             }
             else v = 0;
+            //Frenar
             if (Input.GetAxis("Trigger_Left") > 0)
             {
                 f = Input.GetAxis("Trigger_Left");
