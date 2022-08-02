@@ -26,7 +26,7 @@ namespace UnityStandardAssets.Vehicles.Car
         [SerializeField] private float m_MaximumSteerAngle;
         [Range(0, 1)] [SerializeField] private float m_SteerHelper; // 0 is raw physics , 1 the car will grip in the direction it is facing
         [Range(0, 1)] [SerializeField] private float m_TractionControl; // 0 is no traction control, 1 is full interference
-        [SerializeField] private float m_FullTorqueOverAllWheels;
+        [SerializeField] private float m_FullTorqueOverAllWheels;//Interesante... Controla la acceleracion
         [SerializeField] private float m_ReverseTorque;
         [SerializeField] private float m_MaxHandbrakeTorque;
         [SerializeField] private float m_Downforce = 100f;
@@ -35,7 +35,7 @@ namespace UnityStandardAssets.Vehicles.Car
         [SerializeField] private static int NoOfGears = 5;
         [SerializeField] private float m_RevRangeBoundary = 1f;
         [SerializeField] private float m_SlipLimit;
-        [SerializeField] private float m_BrakeTorque;
+        [SerializeField] private float m_BrakeTorque;//Este debe controlar el freno
 
         private Quaternion[] m_WheelMeshLocalRotations;
         private Vector3 m_Prevpos, m_Pos;
@@ -139,9 +139,7 @@ namespace UnityStandardAssets.Vehicles.Car
 
             //clamp input values
             steering = Mathf.Clamp(steering, -1, 1);
-            //AccelInput = accel = Mathf.Clamp(accel, 0, 1);//Probablemente este calculo deba adaptarse al axis.
             AccelInput = accel;//Accel ya esta puesto entre 0 y 1 desde el trigger.
-            //BrakeInput = footbrake = -1*Mathf.Clamp(footbrake, -1, 0);
             BrakeInput = footbrake;
             handbrake = Mathf.Clamp(handbrake, 0, 1);
 
@@ -152,7 +150,7 @@ namespace UnityStandardAssets.Vehicles.Car
             m_WheelColliders[1].steerAngle = m_SteerAngle;
 
             SteerHelper();
-            ApplyDrive(accel, footbrake);//Revisar esta cosa. Por como esta puesto, ahora el freno de pie es la marcha atras
+            ApplyDrive(AccelInput);//Revisar esta cosa. Por como esta puesto, ahora el freno de pie es la marcha atras
             CapSpeed();
             
             //Set the handbrake.
@@ -165,7 +163,7 @@ namespace UnityStandardAssets.Vehicles.Car
             }
             if (BrakeInput > 0f)
             {
-                var hbTorque = BrakeInput * m_MaxHandbrakeTorque;
+                var hbTorque = BrakeInput * m_BrakeTorque;
                 m_WheelColliders[2].brakeTorque = hbTorque;
                 m_WheelColliders[3].brakeTorque = hbTorque;
             }
@@ -208,14 +206,14 @@ namespace UnityStandardAssets.Vehicles.Car
         }
 
 
-        private void ApplyDrive(float accel, float footbrake)
+        private void ApplyDrive(float accel)
         {
 
             float thrustTorque;
             switch (m_CarDriveType)
             {
                 case CarDriveType.FourWheelDrive:
-                    thrustTorque = accel * (m_CurrentTorque / 4f);
+                    thrustTorque = accel * (m_CurrentTorque / 4f);//accel determines how much the car accelerates. Like the pedal on a real car, the more you press it, the more it accelerates. 
                     for (int i = 0; i < 4; i++)
                     {
                         m_WheelColliders[i].motorTorque = thrustTorque;
@@ -231,9 +229,8 @@ namespace UnityStandardAssets.Vehicles.Car
                     thrustTorque = accel * (m_CurrentTorque / 2f);
                     m_WheelColliders[2].motorTorque = m_WheelColliders[3].motorTorque = thrustTorque;
                     break;
-
             }
-            //Footbrake
+            //Esto puede usarse para la marcha atras
             /*for (int i = 0; i < 4; i++)
             {
                 if (CurrentSpeed > 5 && Vector3.Angle(transform.forward, m_Rigidbody.velocity) < 50f)

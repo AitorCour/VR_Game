@@ -11,6 +11,7 @@ namespace UnityStandardAssets.Vehicles.Car
         public HingeJoint steeringWheel;
         private float maxTurnAngle = 180;
         float f = 0;
+        float v = 0;
         private void Awake()
         {
             // get the car controller
@@ -24,29 +25,29 @@ namespace UnityStandardAssets.Vehicles.Car
             /*float h = CrossPlatformInputManager.GetAxis("Horizontal");*/
             //float v = CrossPlatformInputManager.GetAxis("Vertical");
             float h = Mathf.Clamp(steeringWheel.angle/maxTurnAngle, -1, 1);
-            float v = CrossPlatformInputManager.GetAxisRaw("XRI_Right_TriggerButton");
 
             /*if (Input.GetAxisRaw("XRI_Right_TriggerButton") > 0)
             {
                 Debug.Log("Hola");
             }*/
             //Accelerar
-            if (Input.GetAxis("Trigger_Right") > 0)
+            if (Input.GetAxis("Trigger_Right") > 0 || Input.GetAxis("XRI_Right_Trigger") > 0)
             {
-                float amount;
-                amount = Input.GetAxis("Trigger_Right");
-                //Debug.Log(amount);
-                v = amount;
+                //amount = Input.GetAxis("Trigger_Right");
+                
+                v = Input.GetAxis("XRI_Right_Trigger");
+                Debug.Log(v);
             }
             else v = 0;
             //Frenar
-            if (Input.GetAxis("Trigger_Left") > 0)
+            if (Input.GetAxis("Trigger_Left") > 0 || Input.GetAxis("XRI_Left_Trigger") > 0)
             {
-                f = Input.GetAxis("Trigger_Left");
+                //f = Input.GetAxis("Trigger_Left");
+                f = Input.GetAxis("XRI_Left_Trigger");
             }
             else f = 0;
 #if !MOBILE_INPUT
-            float handbrake = CrossPlatformInputManager.GetAxis("XRI_Left_TriggerButton");
+            float handbrake = 0;
             m_Car.Move(h, v, f, handbrake);//Cambiada la segunda v por f. Así indicaremos que es el footbrake. Handbrake es un Input fisico dentro del coche.
 #else
             m_Car.Move(h, v, v, 0f);
