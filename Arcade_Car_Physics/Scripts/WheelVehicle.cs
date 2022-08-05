@@ -15,7 +15,11 @@ using UnityEngine;
 namespace VehicleBehaviour {
     [RequireComponent(typeof(Rigidbody))]
     public class WheelVehicle : MonoBehaviour {
-        
+
+        public HingeJoint physicWheel;
+        private float steeringPos = 0;
+        private float maxTurnAngle = 180;
+
         [Header("Inputs")]
     #if MULTIOSCONTROLS
         [SerializeField] PlayerNumber playerId;
@@ -275,7 +279,18 @@ namespace VehicleBehaviour {
                 // Boost
                 boosting = (GetInput(boostInput) > 0.5f);
                 // Turn
-                steering = turnInputCurve.Evaluate(GetInput(turnInput)) * steerAngle;
+                //steering = turnInputCurve.Evaluate(GetInput(turnInput)) * steerAngle; // By me
+                if(physicWheel.angle > 20)
+                {
+                    steeringPos = Mathf.Clamp(physicWheel.angle / maxTurnAngle, 0, 1);
+                }
+                else if (physicWheel.angle < -20)
+                {
+                    steeringPos = Mathf.Clamp(physicWheel.angle / maxTurnAngle, -1, 0);
+                }
+                else steeringPos = 0;
+                //float steeringPos = Mathf.Clamp(physicWheel.angle / maxTurnAngle, -1, 1);
+                steering = steerAngle * steeringPos; 
                 // Dirft
                 drift = GetInput(driftInput) > 0 && rb.velocity.sqrMagnitude > 100;
                 // Jump
@@ -285,7 +300,8 @@ namespace VehicleBehaviour {
             // Direction
             foreach (WheelCollider wheel in turnWheel)
             {
-                wheel.steerAngle = Mathf.Lerp(wheel.steerAngle, steering, steerSpeed);
+                //wheel.steerAngle = Mathf.Lerp(wheel.steerAngle, steering, steerSpeed);
+                wheel.steerAngle = steering;
             }
 
             foreach (WheelCollider wheel in wheels)

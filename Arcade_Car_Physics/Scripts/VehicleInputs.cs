@@ -6,6 +6,7 @@ namespace VehicleBehaviour
     public class VehicleInputs : ScriptableObject
     {
         [Header("Wheelvehicle")]
+        
         public string ThrottleInput = "Throttle";
         public string BrakeInput = "Brake";
         public string TurnInput = "Horizontal";
