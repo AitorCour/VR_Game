@@ -5,7 +5,7 @@ using UnityEngine;
 public class Car_1 : MonoBehaviour
 {
     float rotate, currentRotate;
-    public float steering = 80f;
+    public float steering;
 
     private Rigidbody rBody;
     public Transform carModel;
@@ -25,7 +25,7 @@ public class Car_1 : MonoBehaviour
     public float rotSpeed;
     private float speedForce = 0f;
     private float maxSpeed = 25f;//22
-    private float maxRotationWheels = 10f;
+    private float maxRotationWheels = 5f;
     private float brake = 6f;
     private float acceleration = 4f;//4
     public float inclination;
@@ -389,16 +389,9 @@ public class Car_1 : MonoBehaviour
     }
     public void RotateCar(float i)
     {
-        /*float steering = maxRotationWheels * i; 
-        Debug.Log(steering);
-        transform.Rotate(0, steering, 0);*/
-        int dir = i > 0 ? 1 : -1;
-        float amount = Mathf.Abs((i));
-        Steer(dir, amount);
-    }
-    public void Steer(int direction, float amount)
-    {
-        rotate = (steering * direction) * amount;
+        steering = maxRotationWheels * i;
+        transform.Rotate(0, steering, 0);
+        
     }
     /*public void UnrotateCar()
     {

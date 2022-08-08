@@ -6,46 +6,85 @@ public class InputManager : MonoBehaviour
 {
     //private DriftCarTest car_1;
     private Car_1 car_1;
-    public HingeJoint wheel;
-    private float maxTurnAngle = 180;   // Turn angle of the steering wheel
-    
-    public float turnThreshold = 0.2f;
-    public float maxValue = 0.35f;
-    public float minValue = -0.35f;
+    private Transform wheel;
+    private float maxTurnAngle = 179;   // Turn angle of the steering wheel
+
+    public float steeringPos = 0;
+    public float angle = 0;
+    public bool isNegative = false;
+    public bool canRotate;
+    private bool canStart;
     // Start is called before the first frame update
     void Start()
     {
-        Application.targetFrameRate = 60;
+        canStart = false;
+        //Application.targetFrameRate = 60;
         //car_1 = GameObject.FindGameObjectWithTag("myCar").GetComponent<DriftCarTest>();
         car_1 = GameObject.FindGameObjectWithTag("Player").GetComponent<Car_1>();
+        wheel = GameObject.FindGameObjectWithTag("Steering").GetComponent<Transform>();
+        //wheel.Rotate(30, 0, 0);
+        canRotate = false;
+        steeringPos = 0;
+        angle = 0;
+        //StartCoroutine(WaitForSeconds(3f));
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        //while(!canStart) return;
+
         if (Input.GetAxis("XRI_Right_Trigger") > 0)
         {
             car_1.MoveForward();
             Debug.Log("Pressed");
         }
-        else if (Input.GetAxis("XRI_Left_Trigger") > 0)
+        if (Input.GetAxis("XRI_Left_Trigger") > 0)
         {
             car_1.MoveBackward();
         }
         else car_1.Stop();
 
-        //float steeringPos = Mathf.Clamp(wheel.angle / maxTurnAngle, -1, 1);
-        //car_1.RotateCar(steeringPos);
-
-        float steeringNormal = Mathf.InverseLerp(minValue, maxValue, wheel.transform.localRotation.x);
-        float steeringRange = Mathf.Lerp(-1, 1, steeringNormal);
-        if (Mathf.Abs(steeringRange) < turnThreshold)
+        angle = wheel.eulerAngles.z;
+        
+        if(angle > 180 && angle < 360 || angle < 0 && angle > -360)
         {
-            steeringRange = 0;
+            isNegative = true;
+            canRotate = true;
+            Debug.Log("Negative");
         }
-        else
+        else if (angle < 180f && angle > 0f)
         {
-            car_1.RotateCar(steeringRange);
+            isNegative = false;
+            canRotate = true;
+            Debug.Log("Positive");
+        } 
+        else {
+            canRotate = false;
         }
+        if (canRotate)
+        {
+            if(isNegative)
+            {
+                angle -= 360;
+                steeringPos = angle / maxTurnAngle;
+            }
+            else
+            {
+                steeringPos = angle / maxTurnAngle;
+            }
+        }
+        else steeringPos = 0;
+        //steeringPos = angle / maxTurnAngle;
+        if(steeringPos < 0.1f && steeringPos > -0.1f || !canRotate || steeringPos > 1 || steeringPos < -1)
+        {
+            steeringPos = 0;
+        }
+        else car_1.RotateCar(-steeringPos);
+    }
+    IEnumerator WaitForSeconds(float wait)
+    {
+        yield return new WaitForSeconds(wait);
+        canStart = true;
     }
 }

@@ -3544,10 +3544,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbf0f192078af0643bf213ef98f63f20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wheel: {fileID: 9057108895648413590}
-  turnThreshold: 0.2
-  maxValue: 0.35
-  minValue: -0.35
+  steeringPos: 0
+  angle: 0
+  isNegative: 0
+  canRotate: 0
 --- !u!4 &296607384
 Transform:
   m_ObjectHideFlags: 0
@@ -31948,16 +31948,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1372552188099835072, guid: 1b8a8f594c41d844098a000e611e8921,
         type: 3}
-      propertyPath: m_LocalScale.y
-      value: 100.000015
-      objectReference: {fileID: 0}
-    - target: {fileID: 1372552188099835072, guid: 1b8a8f594c41d844098a000e611e8921,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 100.000015
-      objectReference: {fileID: 0}
-    - target: {fileID: 1372552188099835072, guid: 1b8a8f594c41d844098a000e611e8921,
-        type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.3782646
       objectReference: {fileID: 0}
@@ -31974,22 +31964,22 @@ PrefabInstance:
     - target: {fileID: 1372552188099835072, guid: 1b8a8f594c41d844098a000e611e8921,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9661716
+      value: 0.96617156
       objectReference: {fileID: 0}
     - target: {fileID: 1372552188099835072, guid: 1b8a8f594c41d844098a000e611e8921,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.25790012
+      value: 0.2579001
       objectReference: {fileID: 0}
     - target: {fileID: 1372552188099835072, guid: 1b8a8f594c41d844098a000e611e8921,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1372552188099835072, guid: 1b8a8f594c41d844098a000e611e8921,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1372552188099835072, guid: 1b8a8f594c41d844098a000e611e8921,
         type: 3}
@@ -32011,6 +32001,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SteeringWheel
       objectReference: {fileID: 0}
+    - target: {fileID: 3166366189176319201, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
+      propertyPath: m_TagString
+      value: Steering
+      objectReference: {fileID: 0}
     - target: {fileID: 3166366189176319204, guid: 1b8a8f594c41d844098a000e611e8921,
         type: 3}
       propertyPath: m_ConnectedBody
@@ -32021,46 +32016,11 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: 0.26447922
       objectReference: {fileID: 0}
-    - target: {fileID: 6215074997529703492, guid: 1b8a8f594c41d844098a000e611e8921,
+    - target: {fileID: 3166366189176319207, guid: 1b8a8f594c41d844098a000e611e8921,
         type: 3}
-      propertyPath: m_InteractionManager
-      value: 
-      objectReference: {fileID: 1897409617}
-    - target: {fileID: 6215074998021951247, guid: 1b8a8f594c41d844098a000e611e8921,
-        type: 3}
-      propertyPath: m_InteractionManager
-      value: 
-      objectReference: {fileID: 1897409617}
-    - target: {fileID: 6215074998024356720, guid: 1b8a8f594c41d844098a000e611e8921,
-        type: 3}
-      propertyPath: m_InteractionManager
-      value: 
-      objectReference: {fileID: 1897409617}
-    - target: {fileID: 6215074998192152311, guid: 1b8a8f594c41d844098a000e611e8921,
-        type: 3}
-      propertyPath: m_InteractionManager
-      value: 
-      objectReference: {fileID: 1897409617}
-    - target: {fileID: 6215074998268237602, guid: 1b8a8f594c41d844098a000e611e8921,
-        type: 3}
-      propertyPath: m_InteractionManager
-      value: 
-      objectReference: {fileID: 1897409617}
-    - target: {fileID: 6215074998580346427, guid: 1b8a8f594c41d844098a000e611e8921,
-        type: 3}
-      propertyPath: m_InteractionManager
-      value: 
-      objectReference: {fileID: 1897409617}
-    - target: {fileID: 6215074998595908650, guid: 1b8a8f594c41d844098a000e611e8921,
-        type: 3}
-      propertyPath: m_InteractionManager
-      value: 
-      objectReference: {fileID: 1897409617}
-    - target: {fileID: 6215074998626466363, guid: 1b8a8f594c41d844098a000e611e8921,
-        type: 3}
-      propertyPath: m_InteractionManager
-      value: 
-      objectReference: {fileID: 1897409617}
+      propertyPath: m_Constraints
+      value: 14
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b8a8f594c41d844098a000e611e8921, type: 3}
 --- !u!23 &6260849348387211718
@@ -32900,12 +32860,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5354511583835828595}
   m_Mesh: {fileID: -7575169252217009133, guid: 679029757d7df4c4599713950c3b66c1, type: 3}
---- !u!59 &9057108895648413590 stripped
-HingeJoint:
-  m_CorrespondingSourceObject: {fileID: 3166366189176319204, guid: 1b8a8f594c41d844098a000e611e8921,
-    type: 3}
-  m_PrefabInstance: {fileID: 6215074997653609330}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &9149468823407995182
 GameObject:
   m_ObjectHideFlags: 0
