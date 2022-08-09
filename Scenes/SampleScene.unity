@@ -454,7 +454,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 29720195}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5207,7 +5207,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 387177695}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Car_Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7602,7 +7602,7 @@ GameObject:
   - component: {fileID: 599916904}
   - component: {fileID: 599916903}
   - component: {fileID: 599916906}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Plane
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -9619,7 +9619,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 756567719}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: WheelsHubs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15747,7 +15747,7 @@ GameObject:
   - component: {fileID: 1215786760}
   - component: {fileID: 1215786764}
   - component: {fileID: 1215786765}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Wheels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24707,7 +24707,7 @@ GameObject:
   - component: {fileID: 1812900892}
   - component: {fileID: 1812900891}
   - component: {fileID: 1812900890}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Behaviour
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -24748,13 +24748,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 965214f590def9148a08009321f0e04a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  steering: 80
   carModel: {fileID: 387177695}
   myState: 1
-  rotating: 0
-  speed: 0
-  rotSpeed: 0
-  inclination: 0
+  canMove: 0
+  maxSpeed: 300
+  maxRotationWheels: 2
+  brake: 6
+  acceleration: 40
+  wheelMesh:
+  - {fileID: 4459120813004704809}
+  - {fileID: 3084342036200651024}
   rayDistanceVertical: 0.8
   rayDistanceTransversal: 2.3
   rayDistanceHorizontal: 1
@@ -24764,7 +24767,7 @@ MonoBehaviour:
   downFOV: 27.72
   defaultMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 128
 --- !u!54 &1812900890
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -30282,7 +30285,7 @@ GameObject:
   - component: {fileID: 3443613880800694895}
   - component: {fileID: 3604765371463640284}
   - component: {fileID: 8351765237684967885}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: brizgov
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30324,7 +30327,7 @@ GameObject:
   - component: {fileID: 4019239088547419110}
   - component: {fileID: 2338130311651497707}
   - component: {fileID: 818596107283676083}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: dviga
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30396,7 +30399,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 543450652204476321}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: CAR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30414,7 +30417,7 @@ GameObject:
   - component: {fileID: 7085260003905721648}
   - component: {fileID: 4048060038367469130}
   - component: {fileID: 3195079440620792235}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Quad_Wheel_RL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30572,7 +30575,7 @@ GameObject:
   - component: {fileID: 9051328167647606383}
   - component: {fileID: 2278454041271142065}
   - component: {fileID: 3594197138133872405}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: StopFR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30792,16 +30795,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1812900888}
     m_Modifications:
+    - target: {fileID: 2055855140914175755, guid: c49bd6b4b14b81241bfed2204826e0ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2055855140914175767, guid: c49bd6b4b14b81241bfed2204826e0ba,
         type: 3}
       propertyPath: m_InteractionManager
       value: 
       objectReference: {fileID: 1897409617}
+    - target: {fileID: 2055855141024287701, guid: c49bd6b4b14b81241bfed2204826e0ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2055855141396169818, guid: c49bd6b4b14b81241bfed2204826e0ba,
         type: 3}
       propertyPath: m_InteractionManager
       value: 
       objectReference: {fileID: 1897409617}
+    - target: {fileID: 2055855141396169822, guid: c49bd6b4b14b81241bfed2204826e0ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2055855141729950800, guid: c49bd6b4b14b81241bfed2204826e0ba,
         type: 3}
       propertyPath: m_RootOrder
@@ -30862,6 +30880,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin
       objectReference: {fileID: 0}
+    - target: {fileID: 2055855141729950806, guid: c49bd6b4b14b81241bfed2204826e0ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2055855141971885288, guid: c49bd6b4b14b81241bfed2204826e0ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2055855142055944913, guid: c49bd6b4b14b81241bfed2204826e0ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2055855142095474330, guid: c49bd6b4b14b81241bfed2204826e0ba,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c49bd6b4b14b81241bfed2204826e0ba, type: 3}
 --- !u!1 &2080611125372654252
@@ -30875,7 +30913,7 @@ GameObject:
   - component: {fileID: 1394889261783615335}
   - component: {fileID: 4310583161879282194}
   - component: {fileID: 7557420984373487232}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: podveska.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30893,7 +30931,7 @@ GameObject:
   - component: {fileID: 6654362928087686810}
   - component: {fileID: 2538136670498580271}
   - component: {fileID: 4428623487104620339}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: door_lf_ok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31006,7 +31044,7 @@ GameObject:
   - component: {fileID: 4931218027481638014}
   - component: {fileID: 4876933052736937597}
   - component: {fileID: 1305037034791281296}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31064,7 +31102,7 @@ GameObject:
   - component: {fileID: 1887304514886087615}
   - component: {fileID: 2258096822786477077}
   - component: {fileID: 1993336323450892128}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: windscreen_ok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31201,7 +31239,7 @@ GameObject:
   - component: {fileID: 7443284469912424239}
   - component: {fileID: 2508020613921172401}
   - component: {fileID: 7219042109507957420}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: hub_lf.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31354,6 +31392,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Locomotion System
+      objectReference: {fileID: 0}
+    - target: {fileID: 3957122332044733791, guid: 2ceda7ff025e4dd4eb24a50fe433ed94,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ceda7ff025e4dd4eb24a50fe433ed94, type: 3}
@@ -31592,7 +31635,7 @@ GameObject:
   - component: {fileID: 8609599654067387780}
   - component: {fileID: 8140039686142620022}
   - component: {fileID: 6071514193324846784}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Boot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31666,6 +31709,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Interaction Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 4850993529292810231, guid: e4ea2f139564370479edd1b000dbbd13,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e4ea2f139564370479edd1b000dbbd13, type: 3}
 --- !u!4 &4850993529007066024 stripped
@@ -31685,7 +31733,7 @@ GameObject:
   - component: {fileID: 2894043467073824552}
   - component: {fileID: 4355635184870866999}
   - component: {fileID: 4060975402884367536}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: extra1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31711,7 +31759,7 @@ GameObject:
   - component: {fileID: 1888194090168853401}
   - component: {fileID: 738421250152971953}
   - component: {fileID: 8945443872437260724}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: fari_zad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31729,7 +31777,7 @@ GameObject:
   - component: {fileID: 8085820421143564614}
   - component: {fileID: 1684632668297744431}
   - component: {fileID: 8331996703686930789}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: bump_rear_ok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31783,7 +31831,7 @@ GameObject:
   - component: {fileID: 5137493739268571479}
   - component: {fileID: 9055395854255013904}
   - component: {fileID: 8770360959222500878}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: podveska.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31801,7 +31849,7 @@ GameObject:
   - component: {fileID: 8684205907732292001}
   - component: {fileID: 3444274847017842959}
   - component: {fileID: 1777009915078563885}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: per_fari
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31819,7 +31867,7 @@ GameObject:
   - component: {fileID: 4437780293883884676}
   - component: {fileID: 2240081845494124962}
   - component: {fileID: 1797538477901843359}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: hub_lf.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31852,7 +31900,7 @@ GameObject:
   - component: {fileID: 6997546698515745363}
   - component: {fileID: 6060015045790390750}
   - component: {fileID: 4420657535622014713}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: bonnet_ok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31927,7 +31975,7 @@ GameObject:
   - component: {fileID: 7693636887675893052}
   - component: {fileID: 6885921748558127168}
   - component: {fileID: 2190155605907140476}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: stekla_far
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32003,6 +32051,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3166366189176319201, guid: 1b8a8f594c41d844098a000e611e8921,
         type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3166366189176319201, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
       propertyPath: m_TagString
       value: Steering
       objectReference: {fileID: 0}
@@ -32020,6 +32073,46 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Constraints
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6215074997529703490, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6215074998021951237, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6215074998024359054, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6215074998192152076, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6215074998268237624, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6215074998580346417, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6215074998595908640, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6215074998626466353, guid: 1b8a8f594c41d844098a000e611e8921,
+        type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b8a8f594c41d844098a000e611e8921, type: 3}
@@ -32076,7 +32169,7 @@ GameObject:
   - component: {fileID: 8842496237288626978}
   - component: {fileID: 1975865124762932157}
   - component: {fileID: 1995499921303953823}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: bump_front_ok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32094,7 +32187,7 @@ GameObject:
   - component: {fileID: 1247915071276261668}
   - component: {fileID: 2427641539359327074}
   - component: {fileID: 6549239656400432466}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: podveska
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32216,7 +32309,7 @@ GameObject:
   - component: {fileID: 4459120813004704809}
   - component: {fileID: 847126995277664046}
   - component: {fileID: 7977135622664760591}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Quad_Wheel_FL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32249,7 +32342,7 @@ GameObject:
   - component: {fileID: 3569939751415548379}
   - component: {fileID: 6529983735970255959}
   - component: {fileID: 7361639604310322128}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: door_rf_ok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32524,7 +32617,7 @@ GameObject:
   - component: {fileID: 1150565339355687812}
   - component: {fileID: 4455411518473737673}
   - component: {fileID: 7329794589087541293}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: salon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32557,7 +32650,7 @@ GameObject:
   - component: {fileID: 3084342036200651024}
   - component: {fileID: 8904953637669220755}
   - component: {fileID: 1966084260836053526}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Quad_Wheel_FR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32690,7 +32783,7 @@ GameObject:
   - component: {fileID: 6616004738609759759}
   - component: {fileID: 8499811487099056297}
   - component: {fileID: 6260849348387211718}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Quad_Wheel_RR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32708,7 +32801,7 @@ GameObject:
   - component: {fileID: 5679515869350084224}
   - component: {fileID: 2928824120449999998}
   - component: {fileID: 2116339358078251875}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: chassis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32871,7 +32964,7 @@ GameObject:
   - component: {fileID: 3614373543611457155}
   - component: {fileID: 4459320953469498007}
   - component: {fileID: 200508218928749418}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: StopFL
   m_TagString: Untagged
   m_Icon: {fileID: 0}

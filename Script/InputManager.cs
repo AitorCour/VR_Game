@@ -37,11 +37,12 @@ public class InputManager : MonoBehaviour
         if (Input.GetAxis("XRI_Right_Trigger") > 0)
         {
             car_1.MoveForward();
-            Debug.Log("Pressed");
+            Debug.Log("Pressed Forward");
         }
-        if (Input.GetAxis("XRI_Left_Trigger") > 0)
+        else if (Input.GetAxis("XRI_Left_Trigger") > 0)
         {
             car_1.MoveBackward();
+            Debug.Log("Pressed Backward");
         }
         else car_1.Stop();
 

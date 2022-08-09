@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Car_1 : MonoBehaviour
 {
-    float rotate, currentRotate;
-    public float steering;
-
     private Rigidbody rBody;
     public Transform carModel;
     public enum carState { Stopped, MovingF, MovingB}
@@ -18,18 +15,19 @@ public class Car_1 : MonoBehaviour
     private bool canMoveU;
     private bool canMoveR;
     private bool canMoveL;
-    private bool canMove;
+    public bool canMove;
     
-    public bool rotating;
-    public float speed;
-    public float rotSpeed;
-    private float speedForce = 0f;
-    private float maxSpeed = 25f;//22
-    private float maxRotationWheels = 5f;
-    private float brake = 6f;
-    private float acceleration = 4f;//4
-    public float inclination;
-    private int wheelDirection = 0;
+    [Header("Movement")]
+    private float speed;
+    //public float rotSpeed;
+    public float maxSpeed = 25f;//22        // La maxima velocidad del coche.
+    public float maxRotationWheels = 5f;    // Lo maximo que el coche puede girar.
+    public float brake = 6f;                // Brake force
+    public float acceleration = 4f;//4
+    private float inclination;              // Tal vez con la funcion de los rigidbodies se puede prescindir de la inclinacion
+    private float rotationReference;
+
+    public Transform[] wheelMesh;           //Aqui van todas las ruedas que vayan a rotar.
 
     [Header("Raycast Settings")]
     public float rayDistanceVertical;
@@ -39,7 +37,7 @@ public class Car_1 : MonoBehaviour
     public float rayDownRange;
     public float frontFOV;
     public float downFOV;
-    public LayerMask defaultMask;
+    public LayerMask defaultMask;   // settear bien la mascara
 
     [Header("Time Reset")]
     private float timer = 0f;
@@ -97,7 +95,7 @@ public class Car_1 : MonoBehaviour
         bool canMoveN;
         bool canMoveDF;
         bool canMoveDB;
-        if (Physics.Raycast(transform.position, -transform.up, out hit, rayDistanceVertical, defaultMask))
+        if (Physics.Raycast(transform.position, -transform.up, out hit, rayDistanceVertical, defaultMask))  // Rayo hacia abajo
         {
             if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
             {
@@ -108,7 +106,7 @@ public class Car_1 : MonoBehaviour
             else canMoveN = false;
         }
         else canMoveN = false;
-        if (Physics.Raycast(transform.position, downfront, out hit, rayDownRange, defaultMask))
+        if (Physics.Raycast(transform.position, downfront, out hit, rayDownRange, defaultMask))             // Rayo hacia abajo delantero
         {
             if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
             {
@@ -118,7 +116,7 @@ public class Car_1 : MonoBehaviour
             else canMoveDF = false;
         }
         else canMoveDF = false;
-        if (Physics.Raycast(transform.position, downback, out hit, rayDownRange, defaultMask))
+        if (Physics.Raycast(transform.position, downback, out hit, rayDownRange, defaultMask))              // Rayo hacia abajo trasero
         {
             if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
             {
@@ -128,13 +126,13 @@ public class Car_1 : MonoBehaviour
             else canMoveDB = false;
         }
         else canMoveDB = false;
-        if (!canMoveDB && !canMoveDF && !canMoveN)
-        {
+        if (!canMoveDB && !canMoveDF && !canMoveN)                                                          // Si los rayos anteriores no colisionan/colisionan con algo incorrecto, no puede moverse.
+        {                                                                                                   // Tal vez el coche deberia ser IgnoreRaycast.
             canMove = false;
         }
         else canMove = true;
         //ForwardDetector
-        if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistanceTransversal, defaultMask))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistanceTransversal, defaultMask))   // Estos tres de forward dicen si hay algun obstaculo. Si no lo hay, el vehiculo avanza.
         {
             if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
             {
@@ -172,7 +170,7 @@ public class Car_1 : MonoBehaviour
             }
         }
         else canMoveF = true;
-        if (Physics.Raycast(transform.position, -transform.forward, out hit, rayDistanceTransversal, defaultMask))
+        if (Physics.Raycast(transform.position, -transform.forward, out hit, rayDistanceTransversal, defaultMask))  // Aqui decide si puede moverse hacia detras.
         {
             if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
             {
@@ -181,7 +179,7 @@ public class Car_1 : MonoBehaviour
             }
         }
         else canMoveB = true;
-        if (Physics.Raycast(transform.position, transform.up, out hit, rayDistanceVertical, defaultMask))
+        if (Physics.Raycast(transform.position, transform.up, out hit, rayDistanceVertical, defaultMask))           // Si tiene algo encima no puede moverse? Que? Probablemente borrar.
         {
             if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
             {
@@ -190,35 +188,25 @@ public class Car_1 : MonoBehaviour
             }
         }
         else canMoveU = true;
-        if (Physics.Raycast(transform.position, transform.right, out hit, rayDistanceHorizontal, defaultMask))
+        if (Physics.Raycast(transform.position, transform.right, out hit, rayDistanceHorizontal, defaultMask))      // Decide si puede girar a la derecha.
         {
             if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
             {
-                //Si detecta algo encima no se puede mover 
                 Debug.Log("Right");
                 canMoveR = false;
             }
         }
         else canMoveR = true;
-        if (Physics.Raycast(transform.position, -transform.right, out hit, rayDistanceHorizontal, defaultMask))
+        if (Physics.Raycast(transform.position, -transform.right, out hit, rayDistanceHorizontal, defaultMask))     // Decide si puede girar a la izquierda.
         {
             if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
             {
-                //Si detecta algo encima no se puede mover 
                 Debug.Log("Left");
                 canMoveL = false;
             }
         }
         else canMoveL = true;
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        currentRotate = rotate;rotate = 0;
-        if (speed > speedForce)
-        {
-            speedForce = speed;
-        }
+
         switch (myState)
         {
             case carState.Stopped:
@@ -272,7 +260,9 @@ public class Car_1 : MonoBehaviour
                     
                     float direction = 1 * Time.deltaTime * speed;
                     //myDirection = direction;
-                    transform.Translate(0, 0, direction);
+                    //transform.Translate(0, 0, direction);
+                    Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys.
+                    rBody.velocity = movement;                          // In addition in fixed update and Time.fixedDeltaTime.
                     break;
                 }
             case carState.MovingF:
@@ -281,12 +271,12 @@ public class Car_1 : MonoBehaviour
                     {
                         if (inclination < 320 && inclination > 270)
                         {
-                            //Debug.Log("Case NOT Move");
+                            Debug.Log("Case NOT Move");
                             speed -= brake * Time.deltaTime;
                         }
                         else
                         {
-                            //Debug.Log("Case Move");
+                            Debug.Log("Case Move");
                             speed += acceleration * Time.deltaTime;
                             if (speed > maxSpeed) speed = maxSpeed;
                             else if (speed < 0) speed += brake * 2 * Time.deltaTime;
@@ -298,9 +288,10 @@ public class Car_1 : MonoBehaviour
                         speed = 0;
                         if (speed < 0) speed = 0;
                     }
-                    float direction = 1 * Time.deltaTime * speed;
-                    //myDirection = direction;
-                    transform.Translate(0, 0, direction);
+                    float direction = Time.fixedDeltaTime * speed;
+                    //transform.Translate(0, 0, direction);
+                    //Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys. 
+                    //rBody.MovePosition(transform.position + movement);  // In addition in fixed update and Time.fixedDeltaTime.
                     break;
                 }
             case carState.MovingB:
@@ -315,7 +306,7 @@ public class Car_1 : MonoBehaviour
                         else
                         {
                             speed -= acceleration * Time.deltaTime;
-                            if (speed < -maxSpeed / 2) speed = -maxSpeed / 2;
+                            if (speed < -maxSpeed / 2) speed = -maxSpeed / 2;       // Limita la velocidad marcha atras a la mitad de la maxima velocidad
                             else if (speed > 0) speed -= brake * 2 * Time.deltaTime;
                         }
                     }
@@ -327,7 +318,9 @@ public class Car_1 : MonoBehaviour
                     }
                     float direction = 1 * Time.deltaTime * speed;
                     //myDirection = direction;
-                    transform.Translate(0, 0, direction);
+                    //transform.Translate(0, 0, direction);
+                    Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys.
+                    rBody.velocity = movement;                          // In addition in fixed update and Time.fixedDeltaTime.
                     break;
                 }
             default:
@@ -348,12 +341,16 @@ public class Car_1 : MonoBehaviour
                     break;
                 }
         }
+    }
+    // Update is called once per frame
+    void Update()
+    {
         inclination = transform.rotation.eulerAngles.x;
         /*if (!rotating && rotSpeed != 0)
         {
             UnrotateCar();
         }*/
-        if (!canMove && !canMoveF || !canMove && !canMoveB || !canMove && !canMoveU || !canMove && !canMoveR || !canMove && !canMoveL || !canMove && speed == 0)
+        if (!canMove && !canMoveF || !canMove && !canMoveB || !canMove && !canMoveU || !canMove && !canMoveR || !canMove && !canMoveL || !canMove && speed == 0)    // Resetea la rotacion del coche si esta blocked.
         {
             timer += Time.deltaTime;
             if (timer >= resetTimer)
@@ -384,14 +381,45 @@ public class Car_1 : MonoBehaviour
     }
     public void Stop()
     {
-        
         myState = carState.Stopped;
     }
     public void RotateCar(float i)
-    {
-        steering = maxRotationWheels * i;
-        transform.Rotate(0, steering, 0);
-        
+    {   // Aqui se limita la rotacion segun la velocidad.
+        /*if (speed == 0)
+        {
+            rotationReference = 0;
+        }
+        else if (speed < maxSpeed / 5)
+        {
+            rotationReference = maxRotationWheels / 5;
+        }
+        else if (speed <= maxSpeed / 2)
+        {
+            rotationReference = maxRotationWheels / 2;
+        }
+        else
+        {
+            rotationReference = maxRotationWheels;
+        }*/
+        rotationReference = maxRotationWheels;
+        float steering = rotationReference * i;
+
+        //transform.Rotate(0, steering, 0);                                 // Rotacion por transform
+
+        Vector3 m_EulerAngleVelocity = new Vector3 (0, steering, 0);        // Rotacion cambiada por Rigidbody
+        Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity);  // Tambien deberia estar en FixedUpdate
+        rBody.MoveRotation(rBody.rotation * deltaRotation);
+
+        // Girar ruedas fisicas
+        float wheelDirection = maxRotationWheels * i;
+        if(wheelDirection >= 20)
+        {
+            wheelDirection = 20;
+        }
+        for(int j = 0; j < wheelMesh.Length; j++)
+        {
+            //wheelMesh[j].Rotate(0, wheelDirection, 0);
+        }
     }
     /*public void UnrotateCar()
     {
@@ -425,6 +453,5 @@ public class Car_1 : MonoBehaviour
     IEnumerator WaitForRestartForce()
     {
         yield return new WaitForSeconds(2f);
-        speedForce = 0;
     }
 }
