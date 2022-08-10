@@ -7,7 +7,7 @@ public class InputManager : MonoBehaviour
     //private DriftCarTest car_1;
     private Car_1 car_1;
     private Transform wheel;
-    private float maxTurnAngle = 179;   // Turn angle of the steering wheel
+    private float maxTurnAngle = 90;   // Turn angle of the steering wheel
 
     public float steeringPos = 0;
     public float angle = 0;

@@ -18,7 +18,7 @@ public class Car_1 : MonoBehaviour
     public bool canMove;
     
     [Header("Movement")]
-    private float speed;
+    public float speed;
     //public float rotSpeed;
     public float maxSpeed = 25f;//22        // La maxima velocidad del coche.
     public float maxRotationWheels = 5f;    // Lo maximo que el coche puede girar.
@@ -261,8 +261,11 @@ public class Car_1 : MonoBehaviour
                     float direction = 1 * Time.deltaTime * speed;
                     //myDirection = direction;
                     //transform.Translate(0, 0, direction);
-                    Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys.
-                    rBody.velocity = movement;                          // In addition in fixed update and Time.fixedDeltaTime.
+                    if(rBody.velocity.magnitude > maxSpeed)
+                    {
+                        rBody.velocity = rBody.velocity.normalized * maxSpeed;
+                    }
+                    else rBody.AddForce(transform.forward * speed, ForceMode.Acceleration);
                     break;
                 }
             case carState.MovingF:
@@ -277,21 +280,26 @@ public class Car_1 : MonoBehaviour
                         else
                         {
                             Debug.Log("Case Move");
-                            speed += acceleration * Time.deltaTime;
-                            if (speed > maxSpeed) speed = maxSpeed;
+                            speed += acceleration * Time.fixedDeltaTime;
+                            if (speed > maxSpeed*2) speed = maxSpeed*2;
                             else if (speed < 0) speed += brake * 2 * Time.deltaTime;
                         }
                     }
                     else
                     {
                         //speed -= brake* 10 * Time.deltaTime;
-                        speed = 0;
+                        //speed = 0;
                         if (speed < 0) speed = 0;
                     }
-                    float direction = Time.fixedDeltaTime * speed;
+                    //float direction = Time.fixedDeltaTime * speed;
                     //transform.Translate(0, 0, direction);
                     //Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys. 
                     //rBody.MovePosition(transform.position + movement);  // In addition in fixed update and Time.fixedDeltaTime.
+                    if(rBody.velocity.magnitude > maxSpeed)
+                    {
+                        rBody.velocity = rBody.velocity.normalized * maxSpeed;
+                    }
+                    else rBody.AddForce(transform.forward * speed, ForceMode.Acceleration);
                     break;
                 }
             case carState.MovingB:
@@ -319,8 +327,9 @@ public class Car_1 : MonoBehaviour
                     float direction = 1 * Time.deltaTime * speed;
                     //myDirection = direction;
                     //transform.Translate(0, 0, direction);
-                    Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys.
-                    rBody.velocity = movement;                          // In addition in fixed update and Time.fixedDeltaTime.
+                    //Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys.
+                    //rBody.velocity = movement;                          // In addition in fixed update and Time.fixedDeltaTime.
+                    rBody.AddForce(transform.forward * speed, ForceMode.Acceleration);
                     break;
                 }
             default:
