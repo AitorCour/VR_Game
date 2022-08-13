@@ -12,7 +12,6 @@ public class Car_1 : MonoBehaviour
     [Header("MoveBools")]
     private bool canMoveF;
     private bool canMoveB;
-    private bool canMoveU;
     private bool canMoveR;
     private bool canMoveL;
     public bool canMove;
@@ -26,6 +25,8 @@ public class Car_1 : MonoBehaviour
     public float acceleration = 4f;//4
     private float inclination;              // Tal vez con la funcion de los rigidbodies se puede prescindir de la inclinacion
     private float rotationReference;
+
+    public GameObject[] wheelColliders;
 
     public Transform[] wheelMesh;           //Aqui van todas las ruedas que vayan a rotar.
 
@@ -46,6 +47,7 @@ public class Car_1 : MonoBehaviour
     void Start()
     {
         rBody = GetComponent<Rigidbody>();
+        wheelColliders = GameObject.FindGameObjectsWithTag("Wheel");
     }
     private void OnDrawGizmosSelected()
     {
@@ -92,7 +94,7 @@ public class Car_1 : MonoBehaviour
         Vector3 downfront = (transform.forward * Mathf.Cos(df) - transform.up * Mathf.Sin(df)).normalized;
         float db = downFOV * Mathf.Deg2Rad;
         Vector3 downback = (-transform.forward * Mathf.Cos(db) - transform.up * Mathf.Sin(db)).normalized;
-        bool canMoveN;
+        /*bool canMoveN;
         bool canMoveDF;
         bool canMoveDB;
         if (Physics.Raycast(transform.position, -transform.up, out hit, rayDistanceVertical, defaultMask))  // Rayo hacia abajo
@@ -130,7 +132,7 @@ public class Car_1 : MonoBehaviour
         {                                                                                                   // Tal vez el coche deberia ser IgnoreRaycast.
             canMove = false;
         }
-        else canMove = true;
+        else canMove = true;*/
         //ForwardDetector
         if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistanceTransversal, defaultMask))   // Estos tres de forward dicen si hay algun obstaculo. Si no lo hay, el vehiculo avanza.
         {
@@ -179,15 +181,6 @@ public class Car_1 : MonoBehaviour
             }
         }
         else canMoveB = true;
-        if (Physics.Raycast(transform.position, transform.up, out hit, rayDistanceVertical, defaultMask))           // Si tiene algo encima no puede moverse? Que? Probablemente borrar.
-        {
-            if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
-            {
-                //Si detecta algo encima no se puede mover 
-                canMoveU = false;
-            }
-        }
-        else canMoveU = true;
         if (Physics.Raycast(transform.position, transform.right, out hit, rayDistanceHorizontal, defaultMask))      // Decide si puede girar a la derecha.
         {
             if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
@@ -359,7 +352,8 @@ public class Car_1 : MonoBehaviour
         {
             UnrotateCar();
         }*/
-        if (!canMove && !canMoveF || !canMove && !canMoveB || !canMove && !canMoveU || !canMove && !canMoveR || !canMove && !canMoveL || !canMove && speed == 0)    // Resetea la rotacion del coche si esta blocked.
+        
+        if (!canMove && !canMoveF || !canMove && !canMoveB || !canMove && !canMoveR || !canMove && !canMoveL || !canMove && speed == 0)    // Resetea la rotacion del coche si esta blocked.
         {
             timer += Time.deltaTime;
             if (timer >= resetTimer)
