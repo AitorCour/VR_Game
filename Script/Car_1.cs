@@ -15,6 +15,8 @@ public class Car_1 : MonoBehaviour
     private bool canMoveR;
     private bool canMoveL;
     public bool canMove;
+
+    private bool noneInContact = false;
     
     [Header("Movement")]
     public float speed;
@@ -26,7 +28,7 @@ public class Car_1 : MonoBehaviour
     private float inclination;              // Tal vez con la funcion de los rigidbodies se puede prescindir de la inclinacion
     private float rotationReference;
 
-    public GameObject[] wheelColliders;
+    private WheelContactChecker wheelChecker;     // WheelContactChecker
 
     public Transform[] wheelMesh;           //Aqui van todas las ruedas que vayan a rotar.
 
@@ -47,15 +49,12 @@ public class Car_1 : MonoBehaviour
     void Start()
     {
         rBody = GetComponent<Rigidbody>();
-        wheelColliders = GameObject.FindGameObjectsWithTag("Wheel");
+        wheelChecker = GetComponent<WheelContactChecker>();
     }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Vector3 direction_Down = -transform.up * rayDistanceVertical;
-        Gizmos.DrawRay(transform.position, direction_Down);
-        Vector3 direction_Up = transform.up * rayDistanceVertical;
-        Gizmos.DrawRay(transform.position, direction_Up);
+        
         Vector3 direction_Right = transform.right * rayDistanceHorizontal;
         Gizmos.DrawRay(transform.position, direction_Right);
         Vector3 direction_Left = -transform.right * rayDistanceHorizontal;
@@ -73,14 +72,6 @@ public class Car_1 : MonoBehaviour
         float l = -frontFOV * Mathf.Deg2Rad;
         Vector3 left = (transform.forward * Mathf.Cos(l) + transform.right * Mathf.Sin(l)).normalized;
         Gizmos.DrawRay(transform.position, left * rayFrontRange);
-
-        //Down
-        float df = downFOV * Mathf.Deg2Rad;
-        Vector3 downfront = (transform.forward * Mathf.Cos(df) - transform.up * Mathf.Sin(df)).normalized;
-        Gizmos.DrawRay(transform.position, downfront * rayDownRange);
-        float db = downFOV * Mathf.Deg2Rad;
-        Vector3 downback = (-transform.forward * Mathf.Cos(db) - transform.up * Mathf.Sin(db)).normalized;
-        Gizmos.DrawRay(transform.position, downback * rayDownRange);
     }
     private void FixedUpdate()
     {
@@ -90,49 +81,6 @@ public class Car_1 : MonoBehaviour
         float r = frontFOV * Mathf.Deg2Rad;
         Vector3 rightRayDir = (transform.forward * Mathf.Cos(r) + transform.right * Mathf.Sin(r)).normalized;
 
-        float df = downFOV * Mathf.Deg2Rad;
-        Vector3 downfront = (transform.forward * Mathf.Cos(df) - transform.up * Mathf.Sin(df)).normalized;
-        float db = downFOV * Mathf.Deg2Rad;
-        Vector3 downback = (-transform.forward * Mathf.Cos(db) - transform.up * Mathf.Sin(db)).normalized;
-        /*bool canMoveN;
-        bool canMoveDF;
-        bool canMoveDB;
-        if (Physics.Raycast(transform.position, -transform.up, out hit, rayDistanceVertical, defaultMask))  // Rayo hacia abajo
-        {
-            if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
-            {
-                //Debug.Log("Ground");
-                canMoveN = true;
-            }
-            
-            else canMoveN = false;
-        }
-        else canMoveN = false;
-        if (Physics.Raycast(transform.position, downfront, out hit, rayDownRange, defaultMask))             // Rayo hacia abajo delantero
-        {
-            if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
-            {
-                //Debug.Log("Ground");
-                canMoveDF = true;
-            }
-            else canMoveDF = false;
-        }
-        else canMoveDF = false;
-        if (Physics.Raycast(transform.position, downback, out hit, rayDownRange, defaultMask))              // Rayo hacia abajo trasero
-        {
-            if (hit.transform.tag == "Ground" || hit.transform.tag == "Enemy")
-            {
-                //Debug.Log("Ground");
-                canMoveDB = true;
-            }
-            else canMoveDB = false;
-        }
-        else canMoveDB = false;
-        if (!canMoveDB && !canMoveDF && !canMoveN)                                                          // Si los rayos anteriores no colisionan/colisionan con algo incorrecto, no puede moverse.
-        {                                                                                                   // Tal vez el coche deberia ser IgnoreRaycast.
-            canMove = false;
-        }
-        else canMove = true;*/
         //ForwardDetector
         if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistanceTransversal, defaultMask))   // Estos tres de forward dicen si hay algun obstaculo. Si no lo hay, el vehiculo avanza.
         {
@@ -204,7 +152,7 @@ public class Car_1 : MonoBehaviour
         {
             case carState.Stopped:
                 {
-                    if (speed != 0 && canMove)
+                    /*if (speed != 0 && canMove)
                     {
                         if (inclination < 3 && inclination > -3)
                         {
@@ -257,13 +205,16 @@ public class Car_1 : MonoBehaviour
                     if(rBody.velocity.magnitude > maxSpeed)
                     {
                         rBody.velocity = rBody.velocity.normalized * maxSpeed;
+                    }*/
+                    if(speed > 0)
+                    {
+                        speed -= acceleration/2 * Time.fixedDeltaTime;
                     }
-                    else rBody.AddForce(transform.forward * speed, ForceMode.Acceleration);
                     break;
                 }
             case carState.MovingF:
                 {
-                    if (canMoveF)
+                    /*if (canMoveF)
                     {
                         if (inclination < 320 && inclination > 270)
                         {
@@ -283,21 +234,19 @@ public class Car_1 : MonoBehaviour
                         //speed -= brake* 10 * Time.deltaTime;
                         //speed = 0;
                         if (speed < 0) speed = 0;
-                    }
-                    //float direction = Time.fixedDeltaTime * speed;
-                    //transform.Translate(0, 0, direction);
-                    //Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys. 
-                    //rBody.MovePosition(transform.position + movement);  // In addition in fixed update and Time.fixedDeltaTime.
+                    }*/
+
+                    speed += acceleration * Time.fixedDeltaTime;
+                    if (speed > maxSpeed*2) speed = maxSpeed*2;
                     if(rBody.velocity.magnitude > maxSpeed)
                     {
                         rBody.velocity = rBody.velocity.normalized * maxSpeed;
                     }
-                    else rBody.AddForce(transform.forward * speed, ForceMode.Acceleration);
                     break;
                 }
             case carState.MovingB:
                 {
-                    if(canMoveB)
+                    /*if(canMoveB)
                     {
                         if (inclination > 40 && inclination < 120)
                         {
@@ -317,12 +266,13 @@ public class Car_1 : MonoBehaviour
                         speed = 0;
                         if (speed > 0) speed = 0;
                     }
-                    float direction = 1 * Time.deltaTime * speed;
+                    float direction = 1 * Time.deltaTime * speed;*/
                     //myDirection = direction;
                     //transform.Translate(0, 0, direction);
                     //Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys.
                     //rBody.velocity = movement;                          // In addition in fixed update and Time.fixedDeltaTime.
-                    rBody.AddForce(transform.forward * speed, ForceMode.Acceleration);
+                    speed -= brake * Time.deltaTime;
+                    if (speed < -maxSpeed / 2) speed = -maxSpeed / 2;
                     break;
                 }
             default:
@@ -342,7 +292,9 @@ public class Car_1 : MonoBehaviour
                     }
                     break;
                 }
+            
         }
+        rBody.AddForce(transform.forward * speed, ForceMode.Acceleration);
     }
     // Update is called once per frame
     void Update()
@@ -353,7 +305,7 @@ public class Car_1 : MonoBehaviour
             UnrotateCar();
         }*/
         
-        if (!canMove && !canMoveF || !canMove && !canMoveB || !canMove && !canMoveR || !canMove && !canMoveL || !canMove && speed == 0)    // Resetea la rotacion del coche si esta blocked.
+        /*if (!canMove && !canMoveF || !canMove && !canMoveB || !canMove && !canMoveR || !canMove && !canMoveL || !canMove && speed == 0)    // Resetea la rotacion del coche si esta blocked.
         {
             timer += Time.deltaTime;
             if (timer >= resetTimer)
@@ -362,11 +314,22 @@ public class Car_1 : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
                 timer = 0;
             }
+        }*/
+        if(wheelChecker.noneGrounded && speed == 0)
+        {
+            timer += Time.deltaTime;
+            if (timer >= resetTimer)
+            {
+                //Debug.Log("Reset");
+                transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
+                timer = 0;
+            }
         }
     }
     public void MoveForward()
     {
-        if (!canMove) 
+        if (!canMoveF || wheelChecker.noneGrounded) 
         {
             myState = carState.Stopped;
             Debug.Log("Cannot move");
@@ -379,7 +342,7 @@ public class Car_1 : MonoBehaviour
     }
     public void MoveBackward()
     {
-        if (!canMove) myState = carState.Stopped;
+        if (!canMoveB || wheelChecker.noneGrounded) myState = carState.Stopped;
         else myState = carState.MovingB;
     }
     public void Stop()
