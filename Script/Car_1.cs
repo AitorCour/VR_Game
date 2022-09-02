@@ -237,11 +237,12 @@ public class Car_1 : MonoBehaviour
                     }*/
 
                     speed += acceleration * Time.fixedDeltaTime;
-                    if (speed > maxSpeed*2) speed = maxSpeed*2;
+                    if (speed >= maxSpeed) speed = maxSpeed;
+                    /*if (speed > maxSpeed*2) speed = maxSpeed*2;
                     if(rBody.velocity.magnitude > maxSpeed)
                     {
                         rBody.velocity = rBody.velocity.normalized * maxSpeed;
-                    }
+                    }*/
                     break;
                 }
             case carState.MovingB:
@@ -272,7 +273,7 @@ public class Car_1 : MonoBehaviour
                     //Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys.
                     //rBody.velocity = movement;                          // In addition in fixed update and Time.fixedDeltaTime.
                     speed -= brake * Time.deltaTime;
-                    if (speed < -maxSpeed / 2) speed = -maxSpeed / 2;
+                    if (speed < -maxSpeed) speed = -maxSpeed;
                     break;
                 }
             default:
@@ -294,7 +295,7 @@ public class Car_1 : MonoBehaviour
                 }
             
         }
-        rBody.AddForce(transform.forward * speed, ForceMode.Acceleration);
+        rBody.AddForce(transform.forward * speed/2, ForceMode.Acceleration);
     }
     // Update is called once per frame
     void Update()
