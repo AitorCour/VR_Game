@@ -17,6 +17,7 @@ public class WheelContactChecker : MonoBehaviour
     }
     private void OnDrawGizmosSelected()
     {
+        if(wheelMesh == null) return;
         Gizmos.color = Color.red;
         Vector3 direction_Down = -transform.up * rayDistanceVertical;//Change right by up if Z rotation is different
         foreach(GameObject wheel in wheelMesh)

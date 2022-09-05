@@ -22,6 +22,7 @@ public class Car_1 : MonoBehaviour
     public float speed;
     //public float rotSpeed;
     public float maxSpeed = 25f;//22        // La maxima velocidad del coche.
+    private float tempMaxSpeed = 1f;
     public float maxRotationWheels = 5f;    // Lo maximo que el coche puede girar.
     public float brake = 6f;                // Brake force
     public float acceleration = 4f;//4
@@ -237,7 +238,7 @@ public class Car_1 : MonoBehaviour
                     }*/
 
                     speed += acceleration * Time.fixedDeltaTime;
-                    if (speed >= maxSpeed) speed = maxSpeed;
+                    if (speed >= tempMaxSpeed) speed = tempMaxSpeed;
                     /*if (speed > maxSpeed*2) speed = maxSpeed*2;
                     if(rBody.velocity.magnitude > maxSpeed)
                     {
@@ -272,8 +273,8 @@ public class Car_1 : MonoBehaviour
                     //transform.Translate(0, 0, direction);
                     //Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys.
                     //rBody.velocity = movement;                          // In addition in fixed update and Time.fixedDeltaTime.
-                    speed -= brake * Time.deltaTime;
-                    if (speed < -maxSpeed) speed = -maxSpeed;
+                    speed -= brake * Time.fixedDeltaTime;
+                    if (speed <= tempMaxSpeed) speed = tempMaxSpeed;
                     break;
                 }
             default:
@@ -295,7 +296,9 @@ public class Car_1 : MonoBehaviour
                 }
             
         }
-        rBody.AddForce(transform.forward * speed/2, ForceMode.Acceleration);
+        rBody.AddForce(transform.forward * speed, ForceMode.Acceleration);
+        rBody.drag = speed/tempMaxSpeed;
+
     }
     // Update is called once per frame
     void Update()
@@ -328,24 +331,56 @@ public class Car_1 : MonoBehaviour
             }
         }
     }
-    public void MoveForward()
+    public void Move(int gear)
     {
-        if (!canMoveF || wheelChecker.noneGrounded) 
+        if(gear > 0)
         {
-            myState = carState.Stopped;
-            Debug.Log("Cannot move");
+            if (!canMoveF || wheelChecker.noneGrounded) 
+            {
+                myState = carState.Stopped;
+                Debug.Log("Cannot move");
+            }
+            else
+            {
+                switch (gear)
+                {
+                    case 1:
+                    {
+                        tempMaxSpeed = maxSpeed/2;
+                        break;
+                    }
+                    case 2:
+                    {
+                        tempMaxSpeed = maxSpeed;
+                        break;
+                    }
+                    default:
+                    {
+                        tempMaxSpeed = 1;
+                        break;
+                    }
+                }
+                myState = carState.MovingF;
+                Debug.Log("Can move");
+            }
         }
-        else 
+        else if(gear < 0)
         {
-            myState = carState.MovingF;
-            Debug.Log("Can move");
+            if (!canMoveB || wheelChecker.noneGrounded) myState = carState.Stopped;
+            else 
+            {
+                tempMaxSpeed = maxSpeed/-2;
+                myState = carState.MovingB;
+            }
         }
+        else myState = carState.Stopped;
+
     }
-    public void MoveBackward()
+    /*public void MoveBackward()
     {
         if (!canMoveB || wheelChecker.noneGrounded) myState = carState.Stopped;
         else myState = carState.MovingB;
-    }
+    }*/
     public void Stop()
     {
         myState = carState.Stopped;

@@ -15,8 +15,8 @@ public class InputManager : MonoBehaviour
     public bool isNegative = false;
     public bool canRotate;
     private bool canStart;
-    private bool advance;
-    private bool back;
+    private bool move;
+    private int gear;
 
     // Start is called before the first frame update
     void Start()
@@ -31,8 +31,8 @@ public class InputManager : MonoBehaviour
         canRotate = false;
         steeringPos = 0;
         angle = 0;
-        advance = false;
-        back = false;
+        move = false;
+        gear = 0;
         //StartCoroutine(WaitForSeconds(3f));
     }
 
@@ -41,18 +41,15 @@ public class InputManager : MonoBehaviour
     {
         //while(!canStart) return;
 
-        if (/*Input.GetAxis("XRI_Right_Trigger") > 0*/ advance)
+        if (Input.GetButton("Jump") || move)
         {
-            car_1.MoveForward();
-            Debug.Log("Pressed Forward");
-        }
-        else if (/*Input.GetAxis("XRI_Left_Trigger") > 0*/back)
-        {
-            car_1.MoveBackward();
-            Debug.Log("Pressed Backward");
+            car_1.Move(gear);
         }
         else car_1.Stop();
-
+        if (Input.GetButton("Jump"))
+        {
+            car_1.Move(-1);
+        }
         angle = wheel.eulerAngles.z;
         
         if(angle > 180 && angle < 360 || angle < 0 && angle > -360)
@@ -90,30 +87,38 @@ public class InputManager : MonoBehaviour
         }
         else car_1.RotateCar(-steeringPos);
 
-
-        if(gearShift.angle >= 20)
+        //The limits should have a margin. If not, the gear will bounce and change automatically.
+        if(gearShift.angle >= 10 && gearShift.angle < 30)
         {
             JointSpring hingeSpring = gearShift.spring;
-            hingeSpring.targetPosition = 40f;
+            hingeSpring.targetPosition = 17.25f;
             gearShift.spring = hingeSpring;
-            advance = true;
-            back = false;
+            move = true;
+            gear = 1;
         }
-        else if(gearShift.angle <= -20)
+        else if(gearShift.angle >= 30)
         {
             JointSpring hingeSpring = gearShift.spring;
-            hingeSpring.targetPosition = -40f;
+            hingeSpring.targetPosition = 45f;
             gearShift.spring = hingeSpring;
-            advance = false;
-            back = true;
+            move = true;
+            gear = 2;
+        }
+        else if(gearShift.angle <= -25)
+        {
+            JointSpring hingeSpring = gearShift.spring;
+            hingeSpring.targetPosition = -45f;
+            gearShift.spring = hingeSpring;
+            move = true;
+            gear = -1;
         }
         else
         {
             JointSpring hingeSpring = gearShift.spring;
-            hingeSpring.targetPosition = 0f;
+            hingeSpring.targetPosition = -10f;
             gearShift.spring = hingeSpring;
-            advance = false;
-            back = false;
+            move = false;
+            gear = 0;
         }
     }
     IEnumerator WaitForSeconds(float wait)
