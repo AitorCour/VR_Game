@@ -56,13 +56,13 @@ public class InputManager : MonoBehaviour
         {
             isNegative = true;
             canRotate = true;
-            Debug.Log("Negative");
+            //Debug.Log("Negative");
         }
         else if (angle < 180f && angle > 0f)
         {
             isNegative = false;
             canRotate = true;
-            Debug.Log("Positive");
+            //Debug.Log("Positive");
         } 
         else {
             canRotate = false;

@@ -32,6 +32,7 @@ public class Car_1 : MonoBehaviour
     private WheelContactChecker wheelChecker;     // WheelContactChecker
 
     public Transform[] wheelMesh;           //Aqui van todas las ruedas que vayan a rotar.
+    public float wheelDirection = 0;
 
     [Header("Raycast Settings")]
     public float rayDistanceVertical;
@@ -76,6 +77,15 @@ public class Car_1 : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        foreach (Transform mesh in wheelMesh)
+        {
+            //mesh.Rotate(0, wheelDirection*Time.fixedDeltaTime, 0);
+            
+        }
+        Vector3 m_EulerAngleVelocity = new Vector3 (0, wheelDirection, 0);
+        Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity);
+        rBody.MoveRotation(rBody.rotation * deltaRotation);
+        //transform.RotateAround(transform.position, transform.up, Time.fixedDeltaTime * wheelDirection);
         RaycastHit hit;
         float l = -frontFOV * Mathf.Deg2Rad;
         Vector3 leftRayDir = (transform.forward * Mathf.Cos(l) + transform.right * Mathf.Sin(l)).normalized;
@@ -408,19 +418,16 @@ public class Car_1 : MonoBehaviour
 
         //transform.Rotate(0, steering, 0);                                 // Rotacion por transform
 
-        Vector3 m_EulerAngleVelocity = new Vector3 (0, steering, 0);        // Rotacion cambiada por Rigidbody
+        /*Vector3 m_EulerAngleVelocity = new Vector3 (0, steering, 0);        // Rotacion cambiada por Rigidbody
         Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity);  // Tambien deberia estar en FixedUpdate
-        rBody.MoveRotation(rBody.rotation * deltaRotation);
+        rBody.MoveRotation(rBody.rotation * deltaRotation);*/
 
         // Girar ruedas fisicas
-        float wheelDirection = maxRotationWheels * i;
-        if(wheelDirection >= 20)
+        //wheelDirection = steering;
+        foreach (Transform mesh in wheelMesh)
         {
-            wheelDirection = 20;
-        }
-        for(int j = 0; j < wheelMesh.Length; j++)
-        {
-            //wheelMesh[j].Rotate(0, wheelDirection, 0);
+            //mesh.Rotate(wheelDirection, 0, 0, Space.Self);
+            //transform.RotateAround(transform.position, transform.up, Time.deltaTime * steering);
         }
     }
     /*public void UnrotateCar()
