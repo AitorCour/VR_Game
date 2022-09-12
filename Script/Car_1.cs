@@ -21,18 +21,17 @@ public class Car_1 : MonoBehaviour
     [Header("Movement")]
     public float speed;
     //public float rotSpeed;
-    public float maxSpeed = 25f;//22        // La maxima velocidad del coche.
+    public float maxSpeed = 30f;//22        // La maxima velocidad del coche.
     private float tempMaxSpeed = 1f;
     public float maxRotationWheels = 5f;    // Lo maximo que el coche puede girar.
-    public float brake = 6f;                // Brake force
-    public float acceleration = 4f;//4
-    private float inclination;              // Tal vez con la funcion de los rigidbodies se puede prescindir de la inclinacion
+    public float brake = 10f;                // Brake force
+    public float acceleration = 15f;         //4
     private float rotationReference;
+    private int gear;
 
     private WheelContactChecker wheelChecker;     // WheelContactChecker
 
-    public Transform[] wheelMesh;           //Aqui van todas las ruedas que vayan a rotar.
-    public float wheelDirection = 0;
+    public GameObject[] wheelHubs;           //Aqui van todas las ruedas que vayan a rotar.
 
     [Header("Raycast Settings")]
     public float rayDistanceVertical;
@@ -154,128 +153,28 @@ public class Car_1 : MonoBehaviour
         {
             case carState.Stopped:
                 {
-                    /*if (speed != 0 && canMove)
-                    {
-                        if (inclination < 3 && inclination > -3)
-                        {
-                            //Debug.Log("NO Bajada");
-                            if (speed > 0)
-                            {
-                                speed -= brake * Time.deltaTime;
-                                if (speed < 0) speed = 0;
-                            }
-                            else if (speed < 0)
-                            {
-                                speed += brake * Time.deltaTime;
-                                if (speed > 0) speed = 0;
-                            }
-                        }
-                        else
-                        {
-                            if (inclination > 0 && inclination < 60)
-                            {
-                                speed += brake * Time.deltaTime;
-                                //Debug.Log("Caer de Culo");
-                            }
-                            if (inclination < 360 && inclination > 270)
-                            {
-                                speed -= brake * Time.deltaTime;
-                                //Debug.Log("Caer de Cara");
-                            }
-                        }
-                        if (!canMoveF && speed > 0 || !canMoveB && speed < 0) speed = 0;
-                    }
-                    else if(speed != 0 && !canMove)
-                    {
-                        //Debug.Log("Aerial");
-                        if (speed > 0)
-                        {
-                            speed -= brake * 2 * Time.deltaTime;
-                            if (speed < 0) speed = 0;
-                        }
-                        else if (speed < 0)
-                        {
-                            speed += brake * Time.deltaTime;
-                            if (speed > 0) speed = 0;
-                        }
-                    }
-                    else speed = 0;
-                    
-                    float direction = 1 * Time.deltaTime * speed;
-                    //myDirection = direction;
-                    //transform.Translate(0, 0, direction);
-                    if(rBody.velocity.magnitude > maxSpeed)
-                    {
-                        rBody.velocity = rBody.velocity.normalized * maxSpeed;
-                    }*/
                     if(speed > 0)
                     {
                         speed -= acceleration/2 * Time.fixedDeltaTime;
                     }
+                    wheelHubs[0].SetActive(true);
+                    wheelHubs[1].SetActive(false);
                     break;
                 }
             case carState.MovingF:
                 {
-                    /*if (canMoveF)
-                    {
-                        if (inclination < 320 && inclination > 270)
-                        {
-                            Debug.Log("Case NOT Move");
-                            speed -= brake * Time.deltaTime;
-                        }
-                        else
-                        {
-                            Debug.Log("Case Move");
-                            speed += acceleration * Time.fixedDeltaTime;
-                            if (speed > maxSpeed*2) speed = maxSpeed*2;
-                            else if (speed < 0) speed += brake * 2 * Time.deltaTime;
-                        }
-                    }
-                    else
-                    {
-                        //speed -= brake* 10 * Time.deltaTime;
-                        //speed = 0;
-                        if (speed < 0) speed = 0;
-                    }*/
-
                     speed += acceleration * Time.fixedDeltaTime;
                     if (speed >= tempMaxSpeed) speed = tempMaxSpeed;
-                    /*if (speed > maxSpeed*2) speed = maxSpeed*2;
-                    if(rBody.velocity.magnitude > maxSpeed)
-                    {
-                        rBody.velocity = rBody.velocity.normalized * maxSpeed;
-                    }*/
+                    wheelHubs[0].SetActive(false);
+                    wheelHubs[1].SetActive(true);
                     break;
                 }
             case carState.MovingB:
                 {
-                    /*if(canMoveB)
-                    {
-                        if (inclination > 40 && inclination < 120)
-                        {
-                            speed += brake * Time.deltaTime;
-                            //Debug.Log("Case NOT Move");
-                        }
-                        else
-                        {
-                            speed -= acceleration * Time.deltaTime;
-                            if (speed < -maxSpeed / 2) speed = -maxSpeed / 2;       // Limita la velocidad marcha atras a la mitad de la maxima velocidad
-                            else if (speed > 0) speed -= brake * 2 * Time.deltaTime;
-                        }
-                    }
-                    else
-                    {
-                        //speed += brake * 10 * Time.deltaTime;
-                        speed = 0;
-                        if (speed > 0) speed = 0;
-                    }
-                    float direction = 1 * Time.deltaTime * speed;*/
-                    //myDirection = direction;
-                    //transform.Translate(0, 0, direction);
-                    //Vector3 movement = new Vector3 (0,0,direction);     // All movement should be done by rigidbodys.
-                    //rBody.velocity = movement;                          // In addition in fixed update and Time.fixedDeltaTime.
                     speed -= brake * Time.fixedDeltaTime;
                     if (speed <= tempMaxSpeed) speed = tempMaxSpeed;
+                    wheelHubs[0].SetActive(false);
+                    wheelHubs[1].SetActive(true);
                     break;
                 }
             default:
@@ -293,6 +192,8 @@ public class Car_1 : MonoBehaviour
                             if (speed > 0) speed = 0;
                         }
                     }
+                    wheelHubs[0].SetActive(true);
+                    wheelHubs[1].SetActive(false);
                     break;
                 }
             
@@ -304,22 +205,6 @@ public class Car_1 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        inclination = transform.rotation.eulerAngles.x;
-        /*if (!rotating && rotSpeed != 0)
-        {
-            UnrotateCar();
-        }*/
-        
-        /*if (!canMove && !canMoveF || !canMove && !canMoveB || !canMove && !canMoveR || !canMove && !canMoveL || !canMove && speed == 0)    // Resetea la rotacion del coche si esta blocked.
-        {
-            timer += Time.deltaTime;
-            if (timer >= resetTimer)
-            {
-                //Debug.Log("Reset");
-                transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-                timer = 0;
-            }
-        }*/
         if(wheelChecker.noneGrounded && speed == 0)
         {
             timer += Time.deltaTime;
@@ -332,8 +217,9 @@ public class Car_1 : MonoBehaviour
             }
         }
     }
-    public void Move(int gear)
+    public void Move(int i)
     {
+        gear = i;
         if(gear > 0)
         {
             if (!canMoveF || wheelChecker.noneGrounded) 
@@ -347,7 +233,7 @@ public class Car_1 : MonoBehaviour
                 {
                     case 1:
                     {
-                        tempMaxSpeed = maxSpeed/2;
+                        tempMaxSpeed = maxSpeed/1.5f;
                         break;
                     }
                     case 2:
@@ -357,7 +243,7 @@ public class Car_1 : MonoBehaviour
                     }
                     default:
                     {
-                        tempMaxSpeed = 1;
+                        tempMaxSpeed = 1f;
                         break;
                     }
                 }
@@ -370,44 +256,43 @@ public class Car_1 : MonoBehaviour
             if (!canMoveB || wheelChecker.noneGrounded) myState = carState.Stopped;
             else 
             {
-                tempMaxSpeed = maxSpeed/-2;
+                tempMaxSpeed = maxSpeed/-2f;
                 myState = carState.MovingB;
             }
         }
         else myState = carState.Stopped;
 
     }
-    /*public void MoveBackward()
-    {
-        if (!canMoveB || wheelChecker.noneGrounded) myState = carState.Stopped;
-        else myState = carState.MovingB;
-    }*/
     public void Stop()
     {
         myState = carState.Stopped;
     }
     public void RotateCar(float i)
     {   // Aqui se limita la rotacion segun la velocidad.
-        /*if (speed == 0)
+        switch (gear)
         {
-            rotationReference = 0;
+            case 1:
+            {
+                rotationReference = maxRotationWheels / 2f;
+                break;
+            }
+            case 2:
+            {
+                rotationReference = maxRotationWheels;
+                break;
+            }
+            case -1:
+            {
+                rotationReference = maxRotationWheels / 2f;
+                break;
+            }
+            default:
+            {
+                rotationReference = 0f;
+                break;
+            }
         }
-        else if (speed < maxSpeed / 5)
-        {
-            rotationReference = maxRotationWheels / 5;
-        }
-        else if (speed <= maxSpeed / 2)
-        {
-            rotationReference = maxRotationWheels / 2;
-        }
-        else
-        {
-            rotationReference = maxRotationWheels;
-        }*/
-        rotationReference = maxRotationWheels;
-        float steering = rotationReference * i;
-
-        //transform.Rotate(0, steering, 0);                                 // Rotacion por transform
+        float steering = rotationReference * i;                          // Rotacion por transform
 
         Vector3 m_EulerAngleVelocity = new Vector3 (0, steering, 0);        // Rotacion cambiada por Rigidbody
         Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity);  // Tambien deberia estar en FixedUpdate
@@ -415,35 +300,12 @@ public class Car_1 : MonoBehaviour
 
         // Girar ruedas fisicas
         //wheelDirection = steering;
-        foreach (Transform mesh in wheelMesh)
+        /*foreach (Transform mesh in wheelMesh)
         {
             //mesh.Rotate(wheelDirection, 0, 0, Space.Self);
             //transform.RotateAround(transform.position, transform.up, Time.deltaTime * steering);
-        }
+        }*/
     }
-    /*public void UnrotateCar()
-    {
-        if (rotSpeed < 0)
-        {
-            rotSpeed += rotAcceleration * Time.deltaTime;
-            if (rotSpeed >= 0)
-            {
-                rotSpeed = 0;
-            }
-            float direction = 1 * Time.deltaTime * rotSpeed;
-            transform.Rotate(0, direction, 0);
-        }
-        if (rotSpeed > 0)
-        {
-            rotSpeed -= rotAcceleration * Time.deltaTime;
-            if (rotSpeed <= 0)
-            {
-                rotSpeed = 0;
-            }
-            float direction = 1 * Time.deltaTime * rotSpeed;
-            transform.Rotate(0, direction, 0);
-        }
-    }*/
     public void RecieveHit()
     {
         speed = 0;

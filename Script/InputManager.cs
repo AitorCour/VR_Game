@@ -32,7 +32,7 @@ public class InputManager : MonoBehaviour
         steeringPos = 0;
         angle = 0;
         move = false;
-        gear = 0;
+        SetGear(-10f, false, 0);
         //StartCoroutine(WaitForSeconds(3f));
     }
 
@@ -88,42 +88,34 @@ public class InputManager : MonoBehaviour
         else car_1.RotateCar(-steeringPos);
 
         //The limits should have a margin. If not, the gear will bounce and change automatically.
-        if(gearShift.angle >= 10 && gearShift.angle < 30)
+        if(gearShift.angle >= 10 && gearShift.angle < 50)
         {
-            JointSpring hingeSpring = gearShift.spring;
-            hingeSpring.targetPosition = 17.25f;
-            gearShift.spring = hingeSpring;
-            move = true;
-            gear = 1;
+            SetGear(25f, true, 1);          //Slow - 1
         }
-        else if(gearShift.angle >= 30)
+        else if(gearShift.angle >= 50)      //Quick - 2
         {
-            JointSpring hingeSpring = gearShift.spring;
-            hingeSpring.targetPosition = 45f;
-            gearShift.spring = hingeSpring;
-            move = true;
-            gear = 2;
+            SetGear(60f, true, 2);
         }
-        else if(gearShift.angle <= -25)
+        else if(gearShift.angle <= -25)     //Rear
         {
-            JointSpring hingeSpring = gearShift.spring;
-            hingeSpring.targetPosition = -45f;
-            gearShift.spring = hingeSpring;
-            move = true;
-            gear = -1;
+            SetGear(-45f, true, -1);
         }
-        else
+        else                                //Dead
         {
-            JointSpring hingeSpring = gearShift.spring;
-            hingeSpring.targetPosition = -10f;
-            gearShift.spring = hingeSpring;
-            move = false;
-            gear = 0;
+            SetGear(-10f, false, 0);
         }
     }
     IEnumerator WaitForSeconds(float wait)
     {
         yield return new WaitForSeconds(wait);
         canStart = true;
+    }
+    private void SetGear(float position, bool willMove, int newGear)
+    {
+        JointSpring hingeSpring = gearShift.spring;
+        hingeSpring.targetPosition = position;
+        gearShift.spring = hingeSpring;
+        move = willMove;
+        gear = newGear;
     }
 }
